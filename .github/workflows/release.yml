@@ -25,10 +25,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Build single-file playable website
         run: npm run build
@@ -39,11 +38,17 @@ jobs:
           cp dist/index.html release-artifacts/car-parking-simulator.html
           (cd dist && zip -r ../release-artifacts/car-parking-simulator-web.zip .)
 
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: car-parking-simulator-release
+          path: release-artifacts/
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          name: Car Parking Simulator ${{ github.event.inputs.tag || github.ref_name }}
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: Car Parking Simulator ${{ inputs.tag || github.ref_name }}
           body: |
             ### Playable Release
             Download **`car-parking-simulator.html`** below and open it directly in any modern browser (Chrome, Edge, Firefox, or Safari) — no web server or internet connection required!
