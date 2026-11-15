@@ -1,0 +1,54 @@
+name: Build & Publish GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build single-file playable website
+        run: npm run build
+
+      - name: Package release files
+        run: |
+          mkdir -p release-artifacts
+          cp dist/index.html release-artifacts/car-parking-simulator.html
+          (cd dist && zip -r ../release-artifacts/car-parking-simulator-web.zip .)
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: Car Parking Simulator ${{ github.event.inputs.tag || github.ref_name }}
+          body: |
+            ### Playable Release
+            Download **`car-parking-simulator.html`** below and open it directly in any modern browser (Chrome, Edge, Firefox, or Safari) — no web server or internet connection required!
+
+            Alternatively, download **`car-parking-simulator-web.zip`**, extract it, and open `index.html`.
+          files: |
+            release-artifacts/car-parking-simulator.html
+            release-artifacts/car-parking-simulator-web.zip
