@@ -26,15 +26,33 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Build single-file playable website
-        run: npm run build
+      - name: Build web app & sync Capacitor Android
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Package release files
         run: |
           mkdir -p release-artifacts
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-artifacts/car-parking-simulator.apk
           cp dist/index.html release-artifacts/car-parking-simulator.html
           (cd dist && zip -r ../release-artifacts/car-parking-simulator-web.zip .)
 
@@ -50,10 +68,11 @@ jobs:
           tag_name: ${{ inputs.tag || github.ref_name }}
           name: Car Parking Simulator ${{ inputs.tag || github.ref_name }}
           body: |
-            ### Playable Release
-            Download **`car-parking-simulator.html`** below and open it directly in any modern browser (Chrome, Edge, Firefox, or Safari) — no web server or internet connection required!
-
-            Alternatively, download **`car-parking-simulator-web.zip`**, extract it, and open `index.html`.
+            ### Downloads
+            - **`car-parking-simulator.apk`** — Install directly on Android phones and tablets (allow "Install unknown apps" when prompted).
+            - **`car-parking-simulator.html`** — Single-file browser version; download and open in any browser without a server.
+            - **`car-parking-simulator-web.zip`** — Static web archive containing `index.html`.
           files: |
+            release-artifacts/car-parking-simulator.apk
             release-artifacts/car-parking-simulator.html
             release-artifacts/car-parking-simulator-web.zip
