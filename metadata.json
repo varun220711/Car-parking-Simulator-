@@ -1,0 +1,6 @@
+{
+  "name": "Car Parking Simulator",
+  "description": "200-level low-poly 3D car parking game with touch steering controls, coin shop, unlockable vehicles, and crisp daylight visuals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
