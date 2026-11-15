@@ -15,7 +15,38 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build-web:
+    name: Build Browser Release (.html & .zip)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps --no-audit --no-fund
+
+      - name: Build single-file website
+        run: npm run build
+
+      - name: Package web files
+        run: |
+          mkdir -p release-web
+          cp dist/index.html release-web/car-parking-simulator.html
+          (cd dist && zip -r ../release-web/car-parking-simulator-web.zip .)
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: release-web/
+
+  build-android:
+    name: Build Android APK (.apk)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,15 +66,27 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK 36 & accept licenses
-        run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
       - name: Install dependencies
         run: npm install --legacy-peer-deps --no-audit --no-fund
 
-      - name: Build web app & sync Capacitor Android
+      - name: Ensure Capacitor Android is configured
+        run: |
+          if ! node -e "require.resolve('@capacitor/android')" >/dev/null 2>&1; then
+            npm install --legacy-peer-deps --no-audit --no-fund @capacitor/core @capacitor/cli @capacitor/android
+          fi
+          if [ ! -f "capacitor.config.ts" ] && [ ! -f "capacitor.config.json" ]; then
+            printf '%s\n' \
+              "import type { CapacitorConfig } from '@capacitor/cli';" \
+              "const config: CapacitorConfig = {" \
+              "  appId: 'com.cpark.simulator'," \
+              "  appName: 'Car Parking Simulator'," \
+              "  webDir: 'dist'," \
+              "  android: { backgroundColor: '#2B96F3' }," \
+              "};" \
+              "export default config;" > capacitor.config.ts
+          fi
+
+      - name: Build web assets & sync Android
         run: |
           npm run build
           if [ ! -d "android" ]; then
@@ -51,24 +94,55 @@ jobs:
           fi
           npx cap sync android
 
+      - name: Install Android SDK 36 & accept licenses
+        run: |
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          SDKMGR="$(command -v sdkmanager || find "$SDK_ROOT" -name sdkmanager -type f 2>/dev/null | head -n 1)"
+          echo "Using SDK_ROOT=$SDK_ROOT and SDKMGR=$SDKMGR"
+          if [ -n "$SDKMGR" ]; then
+            yes | "$SDKMGR" --sdk_root="$SDK_ROOT" --licenses >/dev/null 2>&1 || true
+            "$SDKMGR" --sdk_root="$SDK_ROOT" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          fi
+
       - name: Build Android APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Package release files
+      - name: Package APK
         run: |
-          mkdir -p release-artifacts
-          cp android/app/build/outputs/apk/debug/app-debug.apk release-artifacts/car-parking-simulator.apk
-          cp dist/index.html release-artifacts/car-parking-simulator.html
-          (cd dist && zip -r ../release-artifacts/car-parking-simulator-web.zip .)
+          mkdir -p release-android
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-android/car-parking-simulator.apk
 
-      - name: Upload workflow artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: car-parking-simulator-release
+          name: android-release
+          path: release-android/
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [build-web, build-android]
+    if: always() && (needs.build-web.result == 'success' || needs.build-android.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download web artifact
+        if: needs.build-web.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: web-release
           path: release-artifacts/
+
+      - name: Download APK artifact
+        if: needs.build-android.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: release-artifacts/
+
+      - name: List release files
+        run: ls -lh release-artifacts/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -80,7 +154,4 @@ jobs:
             - **`car-parking-simulator.apk`** — Install directly on Android phones and tablets (allow "Install unknown apps" when prompted).
             - **`car-parking-simulator.html`** — Single-file browser version; download and open in any browser without a server.
             - **`car-parking-simulator-web.zip`** — Static web archive containing `index.html`.
-          files: |
-            release-artifacts/car-parking-simulator.apk
-            release-artifacts/car-parking-simulator.html
-            release-artifacts/car-parking-simulator-web.zip
+          files: release-artifacts/*
