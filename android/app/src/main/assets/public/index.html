@@ -6,15 +6,16 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>Car Parking Simulator</title>
+    <title>Car Park</title>
+    <link rel="icon" type="image/png" href="./car_park_icon_64-Dzmdsi9N.png" />
     <meta
       name="description"
-      content="200-level low-poly 3D car parking game with touch steering controls, coin shop, unlockable vehicles, and crisp daylight visuals."
+      content="Car Park — 200-level low-poly 3D car parking game with touch steering controls, coin shop, unlockable vehicles, and crisp daylight visuals."
     />
-    <meta property="og:title" content="Car Parking Simulator" />
+    <meta property="og:title" content="Car Park" />
     <meta
       property="og:description"
-      content="200-level low-poly 3D car parking game with touch steering controls, coin shop, unlockable vehicles, and crisp daylight visuals."
+      content="Car Park — 200-level low-poly 3D car parking game with touch steering controls, coin shop, unlockable vehicles, and crisp daylight visuals."
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -50820,7 +50821,7 @@ var MainMenu = ({ currentLevel, coins, selectedVehicle, totalStars, onPlay, onOp
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col items-center text-center mt-2 sm:mt-4 pointer-events-none",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-center justify-center gap-1 sm:gap-2",
+					className: "flex items-center justify-center gap-1.5 sm:gap-2.5",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CheckeredFlagSvg, {}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -50830,7 +50831,7 @@ var MainMenu = ({ currentLevel, coins, selectedVehicle, totalStars, onPlay, onOp
 								children: "CAR"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 								className: "font-display font-bold text-5xl sm:text-6xl md:text-7xl text-[#FFB800] tracking-wide text-stroke-title -mt-1.5",
-								children: "PARKING"
+								children: "PARK"
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CheckeredFlagSvg, { flip: true })
@@ -50848,8 +50849,8 @@ var MainMenu = ({ currentLevel, coins, selectedVehicle, totalStars, onPlay, onOp
 							]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "px-4 py-1 font-display font-bold text-base sm:text-xl tracking-widest text-white",
-							children: "SIMULATOR"
+							className: "px-4 py-1 font-display font-bold text-sm sm:text-lg tracking-widest text-white",
+							children: "200 LEVELS"
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "grid grid-cols-2 w-7 h-7 sm:w-8 sm:h-8 shrink-0",
@@ -52420,13 +52421,17 @@ function App() {
 				"aria-hidden": "true",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "font-display font-bold text-3xl text-white text-stroke-dark",
-					children: "PARKING..."
+					children: "CAR PARK"
 				})
 			})
 		]
 	});
 }
+// src/assets/images/car_park_icon_64.png
+var car_park_icon_64_default = new URL("car_park_icon_64-Dzmdsi9N.png", import.meta.url).href;
 // src/main.tsx
+var iconLink = document.querySelector("link[rel='icon']");
+if (iconLink) iconLink.href = car_park_icon_64_default;
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(App, {}));</script>
     <style rel="stylesheet" crossorigin>/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */
 @layer properties {
@@ -54018,8 +54023,8 @@ function App() {
       flex-direction: row;
     }
 
-    .sm\:gap-2 {
-      gap: calc(var(--spacing) * 2);
+    .sm\:gap-2\.5 {
+      gap: calc(var(--spacing) * 2.5);
     }
 
     .sm\:gap-3 {
@@ -54084,14 +54089,14 @@ function App() {
       line-height: var(--tw-leading, var(--text-base--line-height));
     }
 
+    .sm\:text-lg {
+      font-size: var(--text-lg);
+      line-height: var(--tw-leading, var(--text-lg--line-height));
+    }
+
     .sm\:text-sm {
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));
-    }
-
-    .sm\:text-xl {
-      font-size: var(--text-xl);
-      line-height: var(--tw-leading, var(--text-xl--line-height));
     }
   }
 

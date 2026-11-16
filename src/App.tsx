@@ -488,7 +488,7 @@ export default function App() {
           aria-hidden="true"
         >
           <div className="font-display font-bold text-3xl text-white text-stroke-dark">
-            PARKING...
+            CAR PARK
           </div>
         </div>
       )}

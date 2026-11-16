@@ -74,22 +74,22 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         <CoinBadge coins={coins} onClick={onOpenGarage} />
       </div>
 
-      {/* Hero Title Emblem matching Reference Image 1 */}
+      {/* Hero Title Emblem */}
       <div className="flex flex-col items-center text-center mt-2 sm:mt-4 pointer-events-none">
-        <div className="flex items-center justify-center gap-1 sm:gap-2">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2.5">
           <CheckeredFlagSvg />
           <div className="flex flex-col items-center leading-none">
             <span className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-white tracking-wide text-stroke-title">
               CAR
             </span>
             <span className="font-display font-bold text-5xl sm:text-6xl md:text-7xl text-[#FFB800] tracking-wide text-stroke-title -mt-1.5">
-              PARKING
+              PARK
             </span>
           </div>
           <CheckeredFlagSvg flip />
         </div>
 
-        {/* Checkered SIMULATOR banner */}
+        {/* Checkered 200 LEVELS banner */}
         <div className="mt-1 flex items-center bg-[#1A212E] border-[3px] border-[#1A212E] rounded-xl overflow-hidden shadow-[0_4px_0_rgba(26,33,46,0.45)]">
           <div className="grid grid-cols-2 w-7 h-7 sm:w-8 sm:h-8 shrink-0">
             <div className="bg-white" />
@@ -97,8 +97,8 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             <div className="bg-[#475569]" />
             <div className="bg-white" />
           </div>
-          <span className="px-4 py-1 font-display font-bold text-base sm:text-xl tracking-widest text-white">
-            SIMULATOR
+          <span className="px-4 py-1 font-display font-bold text-sm sm:text-lg tracking-widest text-white">
+            200 LEVELS
           </span>
           <div className="grid grid-cols-2 w-7 h-7 sm:w-8 sm:h-8 shrink-0">
             <div className="bg-[#475569]" />

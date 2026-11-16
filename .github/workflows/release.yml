@@ -36,8 +36,8 @@ jobs:
       - name: Package web files
         run: |
           mkdir -p release-web
-          cp dist/index.html release-web/car-parking-simulator.html
-          (cd dist && zip -r ../release-web/car-parking-simulator-web.zip .)
+          cp dist/index.html release-web/car-park.html
+          (cd dist && zip -r ../release-web/car-park-web.zip .)
 
       - name: Upload web artifact
         uses: actions/upload-artifact@v4
@@ -76,7 +76,7 @@ jobs:
               "import type { CapacitorConfig } from '@capacitor/cli';" \
               "const config: CapacitorConfig = {" \
               "  appId: 'com.cpark.simulator'," \
-              "  appName: 'Car Parking Simulator'," \
+              "  appName: 'Car Park'," \
               "  webDir: 'dist'," \
               "  android: { backgroundColor: '#2B96F3' }," \
               "};" \
@@ -112,7 +112,7 @@ jobs:
       - name: Package APK
         run: |
           mkdir -p release-android
-          cp android/app/build/outputs/apk/debug/app-debug.apk release-android/car-parking-simulator.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-android/car-park.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -147,10 +147,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag || github.ref_name }}
-          name: Car Parking Simulator ${{ inputs.tag || github.ref_name }}
+          name: Car Park ${{ inputs.tag || github.ref_name }}
           body: |
             ### Downloads
-            - **`car-parking-simulator.apk`** — Install directly on Android phones and tablets (allow "Install unknown apps" when prompted).
-            - **`car-parking-simulator.html`** — Single-file browser version; download and open in any browser without a server.
-            - **`car-parking-simulator-web.zip`** — Static web archive containing `index.html`.
+            - **`car-park.apk`** — Install directly on Android phones and tablets (allow "Install unknown apps" when prompted).
+            - **`car-park.html`** — Single-file browser version; download and open in any browser without a server.
+            - **`car-park-web.zip`** — Static web archive containing `index.html`.
           files: release-artifacts/*

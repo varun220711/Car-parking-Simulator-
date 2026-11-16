@@ -1,6 +1,6 @@
 {
 	"appId": "com.cpark.simulator",
-	"appName": "Car Parking Simulator",
+	"appName": "Car Park",
 	"webDir": "dist",
 	"android": {
 		"backgroundColor": "#2B96F3"
